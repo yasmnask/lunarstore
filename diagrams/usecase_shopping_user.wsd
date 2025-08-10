@@ -1,0 +1,115 @@
+@startuml
+!define DIRECTION top to bottom direction
+skinparam actorStyle awesome
+skinparam usecase {
+  BorderColor black
+  BackgroundColor #f9f9f9
+  ArrowColor black
+}
+skinparam rectangle {
+  BackgroundColor #ffffff
+  BorderColor black
+}
+
+' === Aktor ===
+actor User as U
+
+' === Shopping System ===
+rectangle "Website Lunar Store" {
+  
+  package "User Settings" {
+    usecase "Overview Profile" as UC_Overview
+    usecase "Edit Profile" as UC_EditProfile
+    usecase "Change Password" as UC_ChangePassword
+    usecase "Delete Account" as UC_DeleteAccount
+    ' Arrange horizontal dalam package
+    UC_Overview -[hidden]right- UC_EditProfile
+    UC_ChangePassword -[hidden]right- UC_DeleteAccount
+    UC_Overview -[hidden]down- UC_ChangePassword
+    UC_EditProfile -[hidden]down- UC_DeleteAccount
+  }
+  
+  package "Product Features" {
+    usecase "Browse Products" as UC_Browse
+    usecase "View Product Details" as UC_ViewDetail
+    ' Arrange horizontal dalam package
+    UC_Browse -[hidden]right- UC_ViewDetail
+  }
+  
+  package "Cart & Order Features" {
+    usecase "Add to Cart" as UC_AddCart
+    usecase "Checkout" as UC_Checkout
+    usecase "Confirm Order" as UC_ConfirmOrder
+    usecase "View Order History" as UC_History
+    ' Arrange dalam package - 2x2 grid
+    UC_AddCart -[hidden]right- UC_Checkout
+    UC_ConfirmOrder -[hidden]right- UC_History
+    UC_AddCart -[hidden]down- UC_ConfirmOrder
+    UC_Checkout -[hidden]down- UC_History
+  }
+  
+  ' Force vertical stacking antar package
+  UC_DeleteAccount -[hidden]down- UC_Browse
+  UC_ViewDetail -[hidden]down- UC_AddCart
+}
+
+' === Relasi User Settings ===
+U --> UC_Overview
+U --> UC_EditProfile
+U --> UC_ChangePassword
+U --> UC_DeleteAccount
+
+' === Relasi Product Features ===
+U --> UC_Browse
+U --> UC_ViewDetail
+
+' === Relasi Cart & Order ===
+U --> UC_AddCart
+U --> UC_Checkout
+U --> UC_ConfirmOrder
+U --> UC_History
+
+' === Notes untuk User Settings ===
+note right of UC_Overview
+  Requires login
+end note
+
+note right of UC_EditProfile
+  Requires login
+end note
+
+note right of UC_ChangePassword
+  Requires login
+end note
+
+note right of UC_DeleteAccount
+  Requires login
+end note
+
+' === Notes untuk Product Features ===
+note left of UC_Browse
+  Requires login
+end note
+
+note left of UC_ViewDetail
+  Requires login
+end note
+
+' === Notes untuk Cart & Order ===
+note right of UC_AddCart
+  Requires login
+end note
+
+note right of UC_Checkout
+  Requires login
+end note
+
+note right of UC_ConfirmOrder
+  Requires login
+end note
+
+note right of UC_History
+  Requires login
+end note
+
+@enduml

@@ -1,0 +1,151 @@
+@startuml
+!define SWIMLANE_WIDTH 200
+skinparam activityBackgroundColor #f9f9f9
+skinparam activityBorderColor black
+skinparam activityDiamondBackgroundColor #ffffff
+skinparam activityDiamondBorderColor black
+
+title Complete Order Process - Website Lunar Store
+
+|#LightBlue|Customer|
+start
+:Add items to cart;
+:Review cart contents;
+:Click "Proceed to Checkout";
+
+|#LightGreen|System|
+:Validate cart items;
+:Check product availability;
+
+if (All items available?) then (no)
+  :Show unavailable items;
+  |#LightBlue|Customer|
+  :Remove/Replace unavailable items;
+  :Update cart;
+else (yes)
+  :Load checkout page;
+  :Display order summary;
+  
+  |#LightBlue|Customer|
+  :Review order items;
+  :Enter/Confirm shipping address;
+  :Select shipping method;
+  note right: Standard, express, same-day
+  :Choose payment method;
+  note right: Credit card, bank transfer, e-wallet
+  
+  if (Payment method?) then (Credit Card)
+    :Enter card details;
+    :Provide CVV and expiry;
+  elseif (Bank Transfer) then
+    :Select bank;
+    :Get transfer instructions;
+  else (E-Wallet)
+    :Select wallet provider;
+    :Authorize payment;
+  endif
+  
+  :Click "Place Order";
+  
+  |#LightGreen|System|
+  :Validate order information;
+  :Calculate final total;
+  note right: Items + shipping + tax - discounts
+  :Check stock one final time;
+  
+  if (Final validation passed?) then (yes)
+    :Create order record;
+    :Generate order ID;
+    :Reserve stock for items;
+    :Set order status to "Pending Payment";
+    
+    |#LightYellow|Payment Gateway|
+    :Process payment;
+    
+    if (Payment successful?) then (yes)
+      |#LightGreen|System|
+      :Update order status to "Paid";
+      :Confirm stock reservation;
+      :Reduce available stock;
+      :Clear customer's cart;
+      :Generate invoice;
+      :Send order confirmation email;
+      
+      |#LightBlue|Customer|
+      :Receive order confirmation;
+      :Get order tracking number;
+      
+      |#LightPink|Fulfillment Team|
+      :Receive order notification;
+      :Pick items from warehouse;
+      :Pack order;
+      :Update order status to "Processing";
+      
+      |#LightGreen|System|
+      :Send processing notification;
+      
+      |#LightPink|Fulfillment Team|
+      :Hand over to shipping;
+      :Update order status to "Shipped";
+      :Provide tracking information;
+      
+      |#LightGreen|System|
+      :Send shipping notification;
+      :Provide tracking link;
+      
+      |#LightBlue|Customer|
+      :Track order delivery;
+      
+      |#LightPink|Delivery Service|
+      :Deliver order;
+      :Confirm delivery;
+      
+      |#LightGreen|System|
+      :Update order status to "Delivered";
+      :Send delivery confirmation;
+      :Request customer feedback;
+      
+      |#LightBlue|Customer|
+      :Receive order;
+      :Optionally leave review;
+      
+      if (Customer satisfied?) then (yes)
+        :Order completed successfully;
+        stop
+      else (no)
+        :Contact customer service;
+        :Initiate return/refund process;
+        note right: Separate return process flow
+        stop
+      endif
+      
+    else (no)
+      |#LightGreen|System|
+      :Payment failed;
+      :Release reserved stock;
+      :Update order status to "Payment Failed";
+      :Send payment failure notification;
+      
+      |#LightBlue|Customer|
+      :Receive failure notification;
+      :Retry payment or cancel order;
+      
+      if (Retry payment?) then (yes)
+        :Return to payment step;
+      else (no)
+        :Cancel order;
+        |#LightGreen|System|
+        :Update order status to "Cancelled";
+        :Release all reservations;
+        stop
+      endif
+    endif
+  else (no)
+    :Show validation errors;
+    |#LightBlue|Customer|
+    :Correct order information;
+    :Resubmit order;
+  endif
+endif
+
+@enduml

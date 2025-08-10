@@ -1,0 +1,153 @@
+@startuml
+!theme aws-orange
+skinparam backgroundColor #fafafa
+skinparam defaultFontName Arial
+skinparam defaultFontSize 10
+
+' Enhanced styling
+skinparam activity {
+    BackgroundColor #ffffff
+    BorderColor #2c3e50
+    BorderThickness 2
+    FontColor #2c3e50
+    FontSize 10
+    FontStyle bold
+}
+
+skinparam activityDiamond {
+    BackgroundColor #ecf0f1
+    BorderColor #34495e
+    BorderThickness 2
+    FontColor #2c3e50
+    FontSize 9
+}
+
+skinparam note {
+    BackgroundColor #fff3cd
+    BorderColor #ffc107
+    FontColor #856404
+}
+
+skinparam swimlane {
+    BorderColor #34495e
+    BorderThickness 2
+    TitleFontSize 12
+    TitleFontStyle bold
+}
+
+title <size:16><b>Lunar Store - Authentication Process</b></size>
+
+|#E3F2FD|User|
+start
+: Access website (homepage);
+
+if (<b>Already authenticated?</b>) then (<color:green><b>✓ Yes</b></color>)
+  : Redirect to homepage;
+  stop
+else (<color:red><b>✗ No</b></color>)
+  : Choose authentication method;
+  
+  split
+    -> **Normal Login**;
+    : Enter credentials\n(email & password);
+    |#E8F5E8|System|
+    : Validate credentials;
+    
+    if (<b>Valid credentials?</b>) then (<color:green><b>✓ Yes</b></color>)
+      : Create session & token;
+      |#E3F2FD|User|
+      : Homepage;
+    else (<color:red><b>✗ No</b></color>)
+      : Display error;
+      : Return to login;
+    endif
+    
+  split again
+    -> **Social Login**;
+    : Click social provider;
+    |#FFE8E8| OAuth Provider|
+    : Redirect to Google;
+    : User authorization;
+    
+    if (<b>Authorized?</b>) then (<color:green><b>✓ Yes</b></color>)
+      : Return auth code;
+      |#E8F5E8| System|
+      : Exchange for token;
+      : Fetch user profile;
+      
+      if (<b>User exists?</b>) then (<color:green><b>✓ Yes</b></color>)
+        : Update profile;
+      else (<color:blue><b>New</b></color>)
+        : Create account;
+      endif
+      
+      : Create session;
+      |#E3F2FD| User|
+      : Homepage;
+    else (<color:red><b>✗ No</b></color>)
+      : Authorization failed;
+      : Login page;
+    endif
+    
+  split again
+    -> **Sign Up**;
+    : Fill registration form;
+    note right
+      Username  
+      Full Name
+      Email
+      Password
+    end note
+    
+    |#E8F5E8|System|
+    : Validate form data;
+    
+    if (<b>Data valid?</b>) then (<color:green><b>✓ Yes</b></color>)
+      if (<b>Email exists?</b>) then (<color:orange><b>⚠ Yes</b></color>)
+        : Email already registered;
+        |#E3F2FD|User|
+        : Sign up form;
+      else (<color:green><b>✓ Available</b></color>)
+        : Hash password;
+        : Create account;
+        |#E3F2FD|User|
+        : Success message;
+        : Homepage;
+      endif
+    else (<color:red><b>✗ No</b></color>)
+      : Show validation errors;
+      : Sign up form;
+    endif
+    
+  split again
+    -> **Social Sign Up**;
+    : Click social sign up;
+    |#FFE8E8| OAuth Provider|
+    : Google OAuth;
+    : Grant permissions;
+    
+    if (<b>Authorized?</b>) then (<color:green><b>✓ Yes</b></color>)
+      : Return auth code;
+      |#E8F5E8|System|
+      : Exchange for token;
+      : Get user data;
+      
+      if (<b>Account exists?</b>) then (<color:orange><b>⚠ Yes</b></color>)
+        : Account already exists;
+        |#E3F2FD|User|
+        : Login page;
+      else (<color:green><b>✓ New</b></color>)
+        : Create new account;
+        : Create session;
+        |#E3F2FD|User|
+        : Homepage;
+      endif
+    else (<color:red><b>✗ No</b></color>)
+      : Authorization error;
+      : Sign up page;
+    endif
+  end split
+endif
+
+stop
+@enduml

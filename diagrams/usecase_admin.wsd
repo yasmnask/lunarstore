@@ -1,0 +1,86 @@
+@startuml
+!define DIRECTION top to bottom direction
+skinparam actorStyle awesome
+skinparam usecase {
+  BorderColor black
+  BackgroundColor #f9f9f9
+  ArrowColor black
+}
+skinparam rectangle {
+  BackgroundColor #ffffff
+  BorderColor black
+}
+
+' === Aktor ===
+actor Admin as A
+
+' === Admin System ===
+rectangle "Website Lunar Store Admin System" {
+  package "Authentication" {
+    usecase "Admin Login" as UC_AdminLogin
+  }
+  
+  package "Master Data Management" {
+    usecase "Manage User Data" as UC_ManageUserData
+    usecase "Manage Products" as UC_ManageProducts
+    usecase "Manage Product Categories" as UC_ManageProductCategories
+    usecase "Manage Product Types" as UC_ManageProductTypes
+    usecase "Manage Product Details" as UC_ManageProductDetails
+    usecase "Manage Product Reviews" as UC_ManageProductReviews
+
+  }
+  
+  package "Transactions Management" {
+    usecase "Manage Orders" as UC_ManageOrders
+    usecase "View Order Details" as UC_ViewOrderDetails
+    usecase "Update Order Status" as UC_UpdateOrderStatus
+  }
+  
+  package "Reporting" {
+    usecase "View Sales Reports" as UC_Reports
+    usecase "Generate Revenue Report" as UC_RevenueReport
+    usecase "View Customer Analytics" as UC_CustomerAnalytics
+  }
+}
+
+' Spacing vertikal
+UC_AdminLogin .down. UC_ManageProducts
+UC_ManageProductReviews .down. UC_ManageOrders
+UC_UpdateOrderStatus .down. UC_Reports
+
+' === Relasi Admin ===
+A --> UC_AdminLogin
+A --> UC_ManageProducts
+A --> UC_ManageUserData
+A --> UC_ManageProductCategories
+A --> UC_ManageProductTypes
+A --> UC_ManageProductDetails
+A --> UC_ManageProductReviews
+A --> UC_ManageOrders
+A --> UC_ViewOrderDetails
+A --> UC_UpdateOrderStatus
+A --> UC_Reports
+A --> UC_RevenueReport
+A --> UC_CustomerAnalytics
+
+' === Include/Extend Relations ===
+UC_ManageOrders ..> UC_ViewOrderDetails : <<include>>
+UC_ManageOrders ..> UC_UpdateOrderStatus : <<include>>
+
+UC_Reports ..> UC_RevenueReport : <<extend>>
+UC_Reports ..> UC_CustomerAnalytics : <<extend>>
+
+' === Notes Admin Only ===
+note right of UC_ManageProductReviews
+  Admin authentication required
+end note
+
+note right of UC_ManageOrders
+  Admin authentication required
+end note
+
+note right of UC_Reports
+  Admin authentication required
+end note
+
+@enduml

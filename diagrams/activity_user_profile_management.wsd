@@ -1,0 +1,145 @@
+@startuml
+!define SWIMLANE_WIDTH 200
+skinparam activityBackgroundColor #f9f9f9
+skinparam activityBorderColor black
+skinparam activityDiamondBackgroundColor #ffffff
+skinparam activityDiamondBorderColor black
+
+title User Profile Management - Website Lunar Store
+
+|#LightBlue|User|
+start
+:User logged in;
+:Access profile menu;
+
+if (Profile action?) then (Overview Profile)
+  |#LightGreen|System|
+  :Load user data from database;
+  :Display profile overview;
+  note right: Show name, email, join date, order statistics
+  
+  |#LightBlue|User|
+  :View profile information;
+  stop
+
+elseif (Edit Profile) then
+  |#LightGreen|System|
+  :Load current user data;
+  :Display edit form;
+  
+  |#LightBlue|User|
+  :Modify profile fields;
+  note right: Name, username, email, phone, address
+  :Click "Save Changes";
+  
+  |#LightGreen|System|
+  :Validate form data;
+  
+  if (Data valid?) then (yes)
+    if (Email changed?) then (yes)
+      if (New email already exists?) then (yes)
+        :Show email exists error;
+        |#LightBlue|User|
+        :Return to edit form;
+      else (no)
+        :Send verification email;
+        :Update user data;
+        :Show success message;
+        note right: Email verification required
+      endif
+    else (no)
+      :Update user data;
+      :Show success message;
+    endif
+    
+    |#LightBlue|User|
+    :Profile updated successfully;
+  else (no)
+    :Show validation errors;
+    :Return to edit form;
+  endif
+
+elseif (Change Password) then
+  |#LightGreen|System|
+  :Display password change form;
+  
+  |#LightBlue|User|
+  :Enter current password;
+  :Enter new password;
+  :Confirm new password;
+  :Click "Change Password";
+  
+  |#LightGreen|System|
+  :Verify current password;
+  
+  if (Current password correct?) then (yes)
+    :Validate new password;
+    
+    if (New password valid?) then (yes)
+      if (Passwords match?) then (yes)
+        :Hash new password;
+        :Update password in database;
+        :Log out all other sessions;
+        :Show success message;
+        
+        |#LightBlue|User|
+        :Password changed successfully;
+      else (no)
+        :Show password mismatch error;
+        :Return to form;
+      endif
+    else (no)
+      :Show password validation errors;
+      note right: Too weak, too short, etc.
+      :Return to form;
+    endif
+  else (no)
+    :Show current password error;
+    :Return to form;
+  endif
+
+else (Delete Account)
+  |#LightGreen|System|
+  :Display account deletion warning;
+  note right: Show consequences of deletion
+  
+  |#LightBlue|User|
+  if (Confirm deletion?) then (yes)
+    :Enter password for confirmation;
+    :Click "Delete Account";
+    
+    |#LightGreen|System|
+    :Verify password;
+    
+    if (Password correct?) then (yes)
+      :Check for active orders;
+      
+      if (Has active orders?) then (yes)
+        :Show active orders warning;
+        |#LightBlue|User|
+        :Cannot delete account;
+        note right: Must complete or cancel active orders first
+      else (no)
+        :Anonymize user data;
+        :Delete personal information;
+        :Keep order history (anonymized);
+        :Invalidate all sessions;
+        :Send deletion confirmation email;
+        
+        |#LightBlue|User|
+        :Account deleted successfully;
+        :Redirect to homepage;
+      endif
+    else (no)
+      :Show password error;
+      :Return to deletion form;
+    endif
+  else (no)
+    :Cancel deletion;
+    :Return to profile;
+  endif
+endif
+
+stop
+
+@enduml

@@ -1,0 +1,197 @@
+@startuml
+!define SWIMLANE_WIDTH 200
+skinparam activityBackgroundColor #f9f9f9
+skinparam activityBorderColor black
+skinparam activityDiamondBackgroundColor #ffffff
+skinparam activityDiamondBorderColor black
+
+title Admin Management Process - Website Lunar Store
+
+|#LightCoral|Admin|
+start
+:Admin access admin panel;
+:Enter admin credentials;
+
+|#LightGreen|System|
+:Validate admin credentials;
+
+if (Admin authenticated?) then (no)
+  :Show authentication error;
+  |#LightCoral|Admin|
+  :Return to login;
+  stop
+else (yes)
+  :Load admin dashboard;
+  :Display admin menu;
+  
+  |#LightCoral|Admin|
+  :Select management option;
+  
+  if (Management type?) then (User Data Management)
+    |#LightGreen|System|
+    :Load users list;
+    :Display user management panel;
+    
+    |#LightCoral|Admin|
+    if (User action?) then (View Users)
+      :Browse user list;
+      :Apply filters (active, banned, etc.);
+    elseif (Edit User) then
+      :Select user to edit;
+      :Modify user details;
+      :Update user status;
+      note right: Active, suspended, banned
+    elseif (Delete User) then
+      :Select user to delete;
+      :Confirm deletion;
+      |#LightGreen|System|
+      :Check user dependencies;
+      :Anonymize user data;
+    endif
+    
+  elseif (Product Management) then
+    |#LightGreen|System|
+    :Load products list;
+    :Display product management panel;
+    
+    |#LightCoral|Admin|
+    if (Product action?) then (Add Product)
+      :Fill product form;
+      note right: Name, description, price, category, stock
+      :Upload product images;
+      :Set product details;
+      
+      |#LightGreen|System|
+      :Validate product data;
+      
+      if (Data valid?) then (yes)
+        :Save product to database;
+        :Process and store images;
+        :Show success message;
+      else (no)
+        :Show validation errors;
+        :Return to form;
+      endif
+      
+    elseif (Edit Product) then
+      :Select product to edit;
+      |#LightGreen|System|
+      :Load product data;
+      :Display edit form;
+      
+      |#LightCoral|Admin|
+      :Modify product details;
+      :Update images if needed;
+      :Save changes;
+      
+      |#LightGreen|System|
+      :Validate changes;
+      :Update product in database;
+      :Show success message;
+      
+    elseif (Delete Product) then
+      :Select product to delete;
+      :Confirm deletion;
+      
+      |#LightGreen|System|
+      :Check product dependencies;
+      note right: Orders, cart items, reviews
+      
+      if (Has dependencies?) then (yes)
+        :Mark product as inactive;
+        :Hide from public view;
+      else (no)
+        :Delete product completely;
+        :Remove associated images;
+      endif
+      
+    elseif (Manage Categories) then
+      :Manage product categories;
+      :Add/Edit/Delete categories;
+      
+    elseif (Manage Reviews) then
+      :View product reviews;
+      :Moderate inappropriate reviews;
+      :Respond to customer feedback;
+    endif
+    
+  elseif (Order Management) then
+    |#LightGreen|System|
+    :Load orders list;
+    :Display order management panel;
+    
+    |#LightCoral|Admin|
+    if (Order action?) then (View Orders)
+      :Browse orders list;
+      :Apply filters (status, date, customer);
+      :View order statistics;
+      
+    elseif (Update Order Status) then
+      :Select order to update;
+      |#LightGreen|System|
+      :Load order details;
+      :Display status options;
+      
+      |#LightCoral|Admin|
+      :Change order status;
+      note right: Pending, Processing, Shipped, Delivered, Cancelled
+      :Add status notes;
+      
+      |#LightGreen|System|
+      :Update order in database;
+      :Send status notification to customer;
+      :Log status change;
+      
+    elseif (View Order Details) then
+      :Select specific order;
+      |#LightGreen|System|
+      :Load complete order information;
+      :Display order details;
+      note right: Customer info, items, payment, shipping
+      
+      |#LightCoral|Admin|
+      :Review order information;
+      :Take necessary actions;
+    endif
+    
+  else (Reporting)
+    |#LightCoral|Admin|
+    if (Report type?) then (Sales Report)
+      :Select date range;
+      :Choose report parameters;
+      
+      |#LightGreen|System|
+      :Generate sales data;
+      :Calculate revenue metrics;
+      :Create visual charts;
+      :Display sales report;
+      
+      |#LightCoral|Admin|
+      :Analyze sales performance;
+      :Export report if needed;
+      
+    elseif (Revenue Report) then
+      :Select time period;
+      |#LightGreen|System|
+      :Calculate total revenue;
+      :Break down by categories;
+      :Show profit margins;
+      :Display revenue trends;
+      
+    else (Customer Analytics)
+      |#LightGreen|System|
+      :Analyze customer behavior;
+      :Generate user statistics;
+      :Show engagement metrics;
+      :Display customer insights;
+      
+      |#LightCoral|Admin|
+      :Review analytics data;
+      :Make business decisions;
+    endif
+  endif
+endif
+
+stop
+
+@enduml

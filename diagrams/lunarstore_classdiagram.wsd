@@ -1,0 +1,162 @@
+@startuml Lunar Store System Class Diagram
+
+!theme plain
+skinparam classAttributeIconSize 0
+skinparam linetype ortho
+
+package "User Management" {
+    class User {
+        +id: int <<PK>>
+        +username: varchar(255) <<unique>>
+        +name: varchar(255)
+        +email: varchar(255) <<unique>>
+        +password: varchar(255)
+        +phone: varchar(255)
+        +address: varchar(255)
+        +avatar: varchar(255)
+        +google_id: varchar(255)
+        +remember_token: varchar(100)
+        +created_at: timestamp
+        +updated_at: timestamp
+    }
+
+    class UserAdmin {
+        +id: int <<PK>>
+        +username: varchar(255) <<unique>>
+        +full_name: varchar(255)
+        +password: varchar(255)
+        +remember_token: varchar(100)
+        +created_at: timestamp
+        +updated_at: timestamp
+    }
+}
+
+package "Product Catalog" {
+    class ProductCategory {
+        +id: int <<PK>>
+        +title: varchar(75)
+        +slug: varchar(150)
+        +description: varchar(150)
+        +image: varchar(255)
+        +is_deleted: boolean
+        +created_at: timestamp
+        +updated_at: timestamp
+    }
+
+    class Product {
+        +id: int <<PK>>
+        +app_name: varchar(200)
+        +description: text
+        +cover_img: varchar(255)
+        +notes: varchar(150)
+        +is_topup: boolean
+        +ready_stock: boolean
+        +category_id: int <<FK>>
+        +is_deleted: boolean
+        +created_at: timestamp
+        +updated_at: timestamp
+    }
+
+    class ProductType {
+        +id: int <<PK>>
+        +app_name: varchar(100)
+        +type_name: varchar(75)
+        +unit: varchar(50)
+        +is_deleted: boolean
+        +description: varchar(255)
+        +created_at: timestamp
+        +updated_at: timestamp
+    }
+
+    class ProductDetail {
+        +id: int <<PK>>
+        +product_id: int <<FK>>
+        +product_type_id: int <<FK>>
+        +duration: varchar(100)
+        +price: int
+        +notes: varchar(10)
+        +created_at: timestamp
+        +updated_at: timestamp
+    }
+
+    class ProductReview {
+        +id: int <<PK>>
+        +user_id: int <<FK>>
+        +product_id: int <<FK>>
+        +transaction_detail_id: int <<FK>>
+        +rating: int
+        +title: varchar(100)
+        +review: text
+        +images: varchar(1000)
+        +is_verified_purchase: boolean
+        +is_approved: boolean
+        +helpful_count: int
+        +created_at: timestamp
+        +updated_at: timestamp
+    }
+}
+
+package "Shopping" {
+    class Cart {
+        +id: int <<PK>>
+        +user_id: int <<FK>>
+        +product_detail_id: int <<FK>>
+        +quantity: int
+        +notes: varchar(255)
+        +created_at: timestamp
+        +updated_at: timestamp
+    }
+}
+
+package "Transactions" {
+    class Transaction {
+        +id: int <<PK>>
+        +user_id: int <<FK>>
+        +transaction_code: varchar(50) <<unique>>
+        +total_amount: int
+        +discount_amount: int
+        +final_amount: int
+        +payment_method: varchar(50)
+        +payment_status: varchar(20)
+        +midtrans_transaction_id: varchar(255)
+        +midtrans_order_id: varchar(255)
+        +payment_url: varchar(500)
+        +paid_at: timestamp
+        +expired_at: timestamp
+        +notes: varchar(500)
+        +status: varchar(20)
+        +created_at: timestamp
+        +updated_at: timestamp
+    }
+
+    class TransactionDetail {
+        +id: int <<PK>>
+        +transaction_id: int <<FK>>
+        +product_detail_id: int <<FK>>
+        +product_name: varchar(200)
+        +product_type: varchar(75)
+        +quantity: int
+        +unit_price: int
+        +total_price: int
+        +notes: varchar(255)
+        +status: varchar(20)
+        +processed_at: timestamp
+        +created_at: timestamp
+        +updated_at: timestamp
+    }
+}
+
+' Relationships
+ProductCategory ||--o{ Product : "has"
+Product ||--o{ ProductDetail : "has"
+ProductType ||--o{ ProductDetail : "categorizes"
+User ||--o{ Cart : "owns"
+ProductDetail ||--o{ Cart : "contains"
+User ||--o{ Transaction : "places"
+Transaction ||--o{ TransactionDetail : "contains"
+ProductDetail ||--o{ TransactionDetail : "references"
+User ||--o{ ProductReview : "writes"
+Product ||--o{ ProductReview : "receives"
+TransactionDetail ||--o| ProductReview : "verifies"
+
+@enduml

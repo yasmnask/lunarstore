@@ -1,0 +1,58 @@
+@startuml
+!define DIRECTION top to bottom direction
+skinparam actorStyle awesome
+skinparam usecase {
+  BorderColor black
+  BackgroundColor #f9f9f9
+  ArrowColor black
+}
+skinparam rectangle {
+  BackgroundColor #ffffff
+  BorderColor black
+}
+
+' === Aktor ===
+actor User as U
+actor "Auth Provider" as AP
+
+' === Website Lunar Store ===
+rectangle "Website Lunar Store" {
+  package "Authentication Systems" {
+    usecase "Login (Normal)" as UC_LoginNormal
+    usecase "Login (Social)" as UC_LoginSocial
+    usecase "Sign Up (Normal)" as UC_SignUpNormal
+    usecase "Sign Up (Social)" as UC_SignUpSocial
+    usecase "Logout" as UC_Logout
+  }
+}
+
+' === Relasi User untuk Authentication ===
+U --> UC_LoginNormal
+U --> UC_LoginSocial
+U --> UC_SignUpNormal
+U --> UC_SignUpSocial
+U --> UC_Logout
+
+' === Relasi Auth Provider ===
+UC_LoginSocial --> AP
+UC_SignUpSocial --> AP
+
+' === Notes ===
+note bottom of UC_SignUpNormal
+  Normal sign up with username, name, email, and password
+end note
+
+note bottom of UC_LoginNormal
+  Normal login with email and password
+end note
+
+note right of UC_LoginSocial
+  Uses external provider
+  (Google)
+end note
+
+note right of UC_SignUpSocial
+  Register via external provider
+end note
+
+@enduml

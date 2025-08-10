@@ -1,0 +1,112 @@
+@startuml
+!define SWIMLANE_WIDTH 200
+skinparam activityBackgroundColor #f9f9f9
+skinparam activityBorderColor black
+skinparam activityDiamondBackgroundColor #ffffff
+skinparam activityDiamondBorderColor black
+
+title Shopping Process - Website Lunar Store
+
+|#LightBlue|User|
+start
+:User access website;
+
+if (Logged in?) then (no)
+  :Redirect to login page;
+  stop
+else (yes)
+  :Access main dashboard;
+  
+  repeat
+    :Browse products page;
+    |#LightGreen|System|
+    :Load products from database;
+    :Apply filters (category, price, etc.);
+    :Display product list;
+    
+    |#LightBlue|User|
+    if (Product found?) then (yes)
+      :Click on product;
+      |#LightGreen|System|
+      :Load product details;
+      :Load product reviews;
+      :Display product page;
+      
+      |#LightBlue|User|
+      if (Want to buy?) then (yes)
+        :Select quantity;
+        :Click "Add to Cart";
+        
+        |#LightGreen|System|
+        :Check product stock;
+        
+        if (Stock available?) then (yes)
+          :Add item to user's cart;
+          :Update cart counter;
+          :Show success notification;
+          
+          |#LightBlue|User|
+          if (Continue shopping?) then (yes)
+            :Go back to browse;
+          else (no)
+            :Go to cart page;
+            |#LightGreen|System|
+            :Load cart items;
+            :Calculate total price;
+            :Display cart summary;
+            
+            |#LightBlue|User|
+            if (Proceed to checkout?) then (yes)
+              :Review cart items;
+              :Enter shipping address;
+              :Select payment method;
+              :Click "Place Order";
+              
+              |#LightGreen|System|
+              :Validate order data;
+              :Check stock availability;
+              :Calculate final price;
+              
+              if (Order valid?) then (yes)
+                :Create order record;
+                :Reserve stock;
+                :Process payment;
+                
+                if (Payment successful?) then (yes)
+                  :Confirm order;
+                  :Send order confirmation email;
+                  :Clear user's cart;
+                  :Update product stock;
+                  
+                  |#LightBlue|User|
+                  :Show order confirmation;
+                  :Redirect to order history;
+                  stop
+                else (no)
+                  :Show payment error;
+                  :Return to checkout;
+                endif
+              else (no)
+                :Show validation errors;
+                :Return to cart;
+              endif
+            else (no)
+              :Stay in cart;
+            endif
+          endif
+        else (no)
+          :Show out of stock message;
+          :Return to product page;
+        endif
+      else (no)
+        :Continue browsing;
+      endif
+    else (no)
+      :Show no products message;
+    endif
+  repeat while (Continue shopping?) is (yes)
+endif
+
+stop
+
+@enduml
