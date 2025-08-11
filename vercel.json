@@ -6,7 +6,7 @@
     },
     "routes": [
         {
-            "src": "/(css|js|images|assets|favicon.ico)/(.*)",
+            "src": "/(css|js|img|images|build|icon|flaticon|images|assets)/(.*)",
             "dest": "/public/$1/$2"
         },
         { "src": "/(.*)", "dest": "/api/index.php" }
@@ -17,7 +17,7 @@
     "env": {
         "APP_ENV": "production",
         "APP_DEBUG": "false",
-        "APP_URL": "https://lunarstore-pi.vercel.app/",
+        "APP_URL": "https://lunarstore-eight.vercel.app/",
         "APP_KEY": "base64:HmXVwpL2zqZicOrhukU8FHorAIl164Jk/Oeb7yv17/I=",
         "APP_CONFIG_CACHE": "/tmp/config.php",
         "APP_EVENTS_CACHE": "/tmp/events.php",
