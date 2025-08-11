@@ -22,6 +22,8 @@
     <link rel="stylesheet" href="{{ asset('assets/admin/compiled/css/app-dark.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/admin/compiled/css/auth.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/admin/custom.css') }}">
+    <link href="/build/assets/app-_YgoRX3O.css" rel="stylesheet">
+
 
     <link
         href="https://cdn.datatables.net/v/bs5/jq-3.7.0/dt-2.3.2/af-2.7.0/b-3.2.3/b-colvis-3.2.3/b-print-3.2.3/cr-2.1.1/cc-1.0.4/date-1.5.5/fc-5.0.4/fh-4.0.2/kt-2.12.1/r-3.0.4/rg-1.5.1/rr-1.5.0/sc-2.4.3/sb-1.8.2/sp-2.3.3/sl-3.0.1/sr-1.4.1/datatables.min.css"
@@ -33,41 +35,41 @@
 <body>
     <script defer src="{{ asset('assets/admin/static/js/initTheme.js') }}"></script>
     @php
-        $isAuthPage = request()->is('admin/login');
+    $isAuthPage = request()->is('admin/login');
     @endphp
 
     @if ($isAuthPage)
-        <div id="auth" class="vh-100 overflow-hidden">
-            <div class="row h-100 m-0">
-                <!-- LEFT -->
-                <div class="col-lg-5 col-12 px-4 py-2 overflow-auto" style="max-height: 100vh;">
-                    <div id="auth-left">
-                        {{ $slot ?? '' }}
-                    </div>
-                </div>
-
-                <!-- RIGHT -->
-                <div class="col-lg-7 d-none d-lg-block position-fixed top-0 end-0 h-100 p-0">
-                    <div id="auth-right" class="w-100 h-100">
-                        <img src="{{ asset('assets/client/images/bg_login_lunar2.png') }}" alt="Illustration"
-                            class="img-fluid h-100 w-100 object-fit-cover" />
-                    </div>
-                </div>
-            </div>
-        </div>
-    @else
-        <div id="app">
-            <x-admin.sidebar />
-            <div id="main" class="layout-navbar navbar-fixed">
-                <x-admin.header />
-
-                <div id="main-content">
+    <div id="auth" class="vh-100 overflow-hidden">
+        <div class="row h-100 m-0">
+            <!-- LEFT -->
+            <div class="col-lg-5 col-12 px-4 py-2 overflow-auto" style="max-height: 100vh;">
+                <div id="auth-left">
                     {{ $slot ?? '' }}
                 </div>
+            </div>
 
-                <x-admin.footer />
+            <!-- RIGHT -->
+            <div class="col-lg-7 d-none d-lg-block position-fixed top-0 end-0 h-100 p-0">
+                <div id="auth-right" class="w-100 h-100">
+                    <img src="{{ asset('assets/client/images/bg_login_lunar2.png') }}" alt="Illustration"
+                        class="img-fluid h-100 w-100 object-fit-cover" />
+                </div>
             </div>
         </div>
+    </div>
+    @else
+    <div id="app">
+        <x-admin.sidebar />
+        <div id="main" class="layout-navbar navbar-fixed">
+            <x-admin.header />
+
+            <div id="main-content">
+                {{ $slot ?? '' }}
+            </div>
+
+            <x-admin.footer />
+        </div>
+    </div>
     @endif
 
     <script src="{{ asset('assets/admin/compiled/js/app.js') }}"></script>
@@ -75,16 +77,16 @@
     @livewireScripts
     @vite('resources/js/admin.js')
     @if (!$isAuthPage)
-        {{-- Admin Page JS --}}
-        <script src=" {{ asset('assets/admin/static/js/components/dark.js') }}"></script>
-        <script src="{{ asset('assets/admin/extensions/perfect-scrollbar/perfect-scrollbar.min.js') }}"></script>
+    {{-- Admin Page JS --}}
+    <script src=" {{ asset('assets/admin/static/js/components/dark.js') }}"></script>
+    <script src="{{ asset('assets/admin/extensions/perfect-scrollbar/perfect-scrollbar.min.js') }}"></script>
 
-        <!-- Include Chart.js -->
-        <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
-        <script
-            src="https://cdn.datatables.net/v/bs5/jq-3.7.0/dt-2.3.2/af-2.7.0/b-3.2.3/b-colvis-3.2.3/b-print-3.2.3/cr-2.1.1/cc-1.0.4/date-1.5.5/fc-5.0.4/fh-4.0.2/kt-2.12.1/r-3.0.4/rg-1.5.1/rr-1.5.0/sc-2.4.3/sb-1.8.2/sp-2.3.3/sl-3.0.1/sr-1.4.1/datatables.min.js"
-            integrity="sha384-T5JsoPWbI1k4R8QhFo0pwD4XPUg6raKMhvMIkr+WOg4Jx3EujydY4gKNvw4MzfJT" crossorigin="anonymous">
-        </script>
+    <!-- Include Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
+    <script
+        src="https://cdn.datatables.net/v/bs5/jq-3.7.0/dt-2.3.2/af-2.7.0/b-3.2.3/b-colvis-3.2.3/b-print-3.2.3/cr-2.1.1/cc-1.0.4/date-1.5.5/fc-5.0.4/fh-4.0.2/kt-2.12.1/r-3.0.4/rg-1.5.1/rr-1.5.0/sc-2.4.3/sb-1.8.2/sp-2.3.3/sl-3.0.1/sr-1.4.1/datatables.min.js"
+        integrity="sha384-T5JsoPWbI1k4R8QhFo0pwD4XPUg6raKMhvMIkr+WOg4Jx3EujydY4gKNvw4MzfJT" crossorigin="anonymous">
+    </script>
     @endif
     <script>
         document.addEventListener('admin-updated', (data) => {

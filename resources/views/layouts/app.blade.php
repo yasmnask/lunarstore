@@ -17,7 +17,8 @@
     @vite('resources/css/app.css')
 
     @livewireStyles
-    <link rel="stylesheet" href="{{ asset('assets/client/css/custom.css') }}" />
+    <!-- <link rel="stylesheet" href="{{ asset('assets/client/css/custom.css') }}" /> -->
+    <link href="/build/assets/app-_YgoRX3O.css" rel="stylesheet">
 
     <!-- FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
@@ -27,18 +28,18 @@
 
 <body class="min-h-screen bg-white">
     @php
-        $isAuthPage = request()->is('login') || request()->is('register');
+    $isAuthPage = request()->is('login') || request()->is('register');
     @endphp
 
     @if (!$isAuthPage)
-        <x-client.nav-menu />
+    <x-client.nav-menu />
     @endif
 
     {{-- Main Content --}}
     {{ $slot ?? '' }}
 
     @if (!$isAuthPage)
-        <x-client.footer />
+    <x-client.footer />
     @endif
 
     {{-- JS --}}
